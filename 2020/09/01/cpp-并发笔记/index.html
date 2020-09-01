@@ -1,72 +1,228 @@
-{% extends 'includes/layout.swig' %}
 
-{% block body %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+  <meta name="renderer" content="webkit">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no", user-scalable=no">
+  <title>cpp 并发笔记Hexo</title>
+  <link rel="shortcut icon" href="">
+  
+    
+    
+      <link rel="stylesheet" href="/css/bootstrap.min.css">
+    
+      <link rel="stylesheet" href="/css/font-awesome.min.css">
+    
+      <link rel="stylesheet" href="/css/atom-one-dark.css">
+    
+      <link rel="stylesheet" href="/css/jquery.fancybox.css">
+    
+      <link rel="stylesheet" href="/css/nprogress.min.css">
+    
+      <link rel="stylesheet" href="/css/valine.css">
+    
+      <link rel="stylesheet" href="/css/life.css">
+    
+  
+
+  
+
+  <!-- jQuery first, then Tether, then Bootstrap JS. -->
+  
+  
+  
+    <script src="/js/jquery-2.2.4.min.js"></script>
+  
+    <script src="https://cdn1.lncld.net/static/js/3.1.0/av-min.js"></script>
+  
+    <script src="/js/jquery.pjax.js"></script>
+  
+    <script src="/js/nprogress.min.js"></script>
+  
+    <script src="/js/tether.min.js"></script>
+  
+    <script src="/js/bootstrap.min.js"></script>
+  
+    <script src="/js/highlight.min.js"></script>
+  
+    <script src="/js/highlightjs-line-numbers.min.js"></script>
+  
+    <script src="/js/jquery.fancybox.js"></script>
+  
+    <script src="/js/jquery.qrcode.min.js"></script>
+  
+    <script src="/js/Valine.min.js"></script>
+  
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+<script>AV.init({appId:'',appKey:''});</script>
+<script type="text/javascript">
+      var config = {
+            ClasS: 'Counter',
+            el:'.views',
+            elP: '.views-post'
+      }
+</script>
+<div class="container">
+    <div class="row blog-box-shadow">
+        <!--博客主栏开始-->
+        <div class="col-xl-9 col-lg-12 blog-main" id="pjax-box">
+            <header class="blog-header">
+                <a href="http://yoursite.com" class="blog-header-mobile-title">Hexo</a>
+                <a href="javascript:;" class="blog-header-navbar-btn"><i class="fa fa-bars"></i></a>
+                <nav class="blog-header-navbar blog-header-fixed">
+                    <ul class="blog-navbar-links">
+                        
+                          <li class="blog-nav-item"><a href="/" class="transition">首页</a></li>
+                        
+                          <li class="blog-nav-item"><a href="/about/" class="transition">关于</a></li>
+                        
+                          <li class="blog-nav-item"><a href="/links/" class="transition">链接</a></li>
+                        
+                        <div class="blog-navbar-right">
+                            <form action="">
+                                <div class="input-group">
+                                    <input type="text" class="blog-header-search" placeholder="search...">
+                                    <buttn type="submit" class="blog-header-search-btn"><i class="fa fa-search"></i></buttn>
+                                </div>
+                            </form>
+                        </div>
+                    </ul>
+                </nav>
+            </header>
+                
 <header class="blog-post-page-title">
-    <h4>{{ page.title }}</h4>
-    <time datetime="{{ page.date.toJSON() }}"><i class="fa fa-clock-o"></i>{{ date(page.date) }}</time>
-    {# 文章阅读次数 #}
-    {% if theme.LeanStatistics_enable==true %}
-    <span>
-        <i class="fa fa-eye"></i>
-        <span id="{{ url_for(page.path) }}" class="views views-post"  title="{{ page.title }}"></span>
-    </span>
-    {% endif %}
-    {# 文章阅读次数 #}
-    {# 文章分类 #}
-	{% if page.categories and page.categories.length %}
-        <span><i class="fa fa-folder-o"></i>
-    		{% for categories in page.categories %}
-    	       <a href="{{ url_for(categories.path) }}" rel="categories" data-toggle="tooltip" data-placement="top" title="Linux">{{ categories.name }}</a>
-    		{% endfor %}
-        </span>
-	{% endif %}
-    {# 文章分类 #}
+    <h4>cpp 并发笔记</h4>
+    <time datetime="2020-08-31T23:34:20.000Z"><i class="fa fa-clock-o"></i>2020-09-01</time>
+    
+    
+    
+    
+	
+    
 </header>
 <div class="blog-main-post blog-post-page-box">
     <article class="blog-post-block blog-post-page-content">
         <section>
-            {% if theme.post_excerpt==true %}
-                {{ page.content }}
-            {% else %}
-                {{ page.more }}
-            {% endif %}
+            
+                <h2 id="Book-Notes"><a href="#Book-Notes" class="headerlink" title="Book Notes"></a>Book Notes</h2><p>std::API使用不重要，重点关注：</p>
+<ul>
+<li>并发的问题（特别是经典问题），及其解决办法</li>
+</ul>
+<h3 id="2-线程管理"><a href="#2-线程管理" class="headerlink" title="2. 线程管理"></a>2. 线程管理</h3><p><strong>overview</strong></p>
+<p>basic: 启动, 等待, 后台运行</p>
+<p>method: 传参, 转移所有权(这个不太好理解), 动态调整线程数量, tag</p>
+<h4 id="2-1-启动，等待-amp-detach"><a href="#2-1-启动，等待-amp-detach" class="headerlink" title="2.1 启动，等待 &amp; detach"></a>2.1 启动，等待 &amp; detach</h4><p>std::thread 只认函数对象，但可以使用列表初始化或lambda来规避这一问题。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">std</span>::thread <span class="title">my_thread</span><span class="params">(a_func())</span></span>; <span class="comment">// 错误用法</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">std</span>::thread <span class="title">my_thread</span><span class="params">((a_func()))</span></span>;  <span class="comment">// 1 多组括号</span></span><br><span class="line"><span class="built_in">std</span>::thread my_thread&#123;a_func()&#125;;    <span class="comment">// 2 列表初始化</span></span><br><span class="line"><span class="function"><span class="built_in">std</span>::thread <span class="title">my_thread</span><span class="params">([]&#123;           <span class="comment">// 3 lambda</span></span></span></span><br><span class="line"><span class="function"><span class="params">  a_func();</span></span></span><br><span class="line"><span class="function"><span class="params">  b_func();</span></span></span><br><span class="line"><span class="function"><span class="params">&#125;)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>注意detach后，线程结束的变量，避免前台进程(或初始化的函数）已经结束，后台进程还在使用传入的局部引用或指针这种case。</p>
+<p>join()只是单纯的等待。使用RAII手法对thread进行包装，在其析构函数中进行.join()</p>
+<p>后台进程的case:</p>
+<p>检测到死锁，需要计算碰撞等信息，但为了不影响主loop的运作，可以使用分离线程将计算过程放在后台进行。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">deadlock_handler</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt; deadlock_agents;</span><br><span class="line">  <span class="keyword">if</span>(detect_deadlock(deadlock_agents))</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::thread <span class="title">deadlock_resolver</span><span class="params">(resolve_deadlock, deadlock_agents, <span class="keyword">this</span>)</span></span>;</span><br><span class="line">    deadlock_resolver.<span class="built_in">detach</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="2-2-传参，-转移所有权"><a href="#2-2-传参，-转移所有权" class="headerlink" title="2.2 传参， 转移所有权"></a>2.2 传参， 转移所有权</h4><p>传参注意下拷贝语义 &amp; 移动语义即可。</p>
+<p>转移所有权类似于<code>std::unique_ptr</code>, 使用<code>std::move</code>进行转移操作。至于c++20正在讨论的<code>jthread</code>就是添加了<code>nonexcept</code>声明+noncopyable+析构join而已。当然多个线程还是通过量产来管理:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::thread&gt; threads;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">unsigned</span> i=<span class="number">0</span>; i&lt;<span class="number">20</span>; ++i)</span><br><span class="line">&#123;</span><br><span class="line">  threads.push_back(<span class="built_in">std</span>::thread(do_it, i));</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">std</span>::for_each(threads.<span class="built_in">begin</span>(), threads.<span class="built_in">end</span>(), <span class="built_in">std</span>::mem_fn(&amp;<span class="built_in">std</span>::thread::join));</span><br></pre></td></tr></table></figure>
+
+<p>std::mem_fn是threads[i]对象的成员函数的wrapper而已，ref: <a target="_blank" rel="noopener" href="https://blog.csdn.net/ANDY_YUN/article/details/106162551">C++11新特性之std::mem_fn函数</a></p>
+<h4 id="2-3-运行时决定线程数量-amp-tag-id"><a href="#2-3-运行时决定线程数量-amp-tag-id" class="headerlink" title="2.3 运行时决定线程数量 &amp; tag.id"></a>2.3 运行时决定线程数量 &amp; tag.id</h4><p>书中这里有个std::parallel_accumulate，当无法获取硬件的线程上限时，可以使用</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">const</span> hardware_threads = <span class="built_in">std</span>::thread::hardware_concurrency();</span><br></pre></td></tr></table></figure>
+
+<p>来决定。这个CPU核芯的数量一般为4~16之间，比如8代i7低压版为8。</p>
+<p>线程id, 下面一段代码讲的很清楚了:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::thread::id master_thread; </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">some_core_part_of_algorithm</span><span class="params">()</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(<span class="built_in">std</span>::this_thread::get_id()==master_thread) <span class="comment">// 主线程</span></span><br><span class="line">  &#123;</span><br><span class="line">    do_master_thread_work();</span><br><span class="line">  &#125;</span><br><span class="line">  do_common_work();  <span class="comment">// 通用部分</span></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-线程间共享数据"><a href="#3-线程间共享数据" class="headerlink" title="3. 线程间共享数据"></a>3. 线程间共享数据</h3><p><strong>overview</strong></p>
+<p>issue: 条件竞争，死锁</p>
+<p>protection: 互斥量，锁</p>
+<h4 id="3-1-数据共享的问题"><a href="#3-1-数据共享的问题" class="headerlink" title="3.1 数据共享的问题"></a>3.1 数据共享的问题</h4><p>条件竞争(race condition): 多个线程之间对共享数据进行修改操作。</p>
+<p>处理思路：1. 无锁编程；2. 类似于数据库，以事务的方式处理数据更新。</p>
+<h4 id="3-2-互斥量"><a href="#3-2-互斥量" class="headerlink" title="3.2 互斥量"></a>3.2 互斥量</h4><p>在对共享数据操作之前，加上</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::muxtex a_mutex;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">oper</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  std::lock_guard&lt;std::mutex&gt; guard(a_mutex)；</span><br><span class="line">  <span class="comment">// your operation for shared data</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>来互斥。当然，指针 或 引用可以很容易的穿过这次lock。</p>
+<p>栈的弹出操作时可能发送条件竞争：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; s; </span><br><span class="line"><span class="keyword">if</span> (! s.empty())</span><br><span class="line">&#123;   </span><br><span class="line">  <span class="keyword">int</span> <span class="keyword">const</span> value = s.top();</span><br><span class="line">  s.pop();</span><br><span class="line">  do_something(value); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在empty()和top()之前可能其他线程执行了pop()操作, 后造成异常。</p>
+<p>method 1:  pop传入一个引用，如果这个引用不存在就pop个空的</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s.pop(value); <span class="comment">// 恩，比较麻烦的接口</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>method 2: 无异常抛出的拷贝构造函数或移动构造函数 </p>
+<p>就是pop一个不存在的对象时不抛出异常，这个需要开启编译选项，为了这个case搞覆盖面如此之广的操作…(⊙o⊙)…</p>
+<p>method 3：返回指向弹出值的指针 (make_shared是个不错的方案，避免new 开销)</p>
+<p>对于int这种而言，pop中make_shared的开销比复制一个还大。</p>
+<p>so… less api is better</p>
+<blockquote>
+<p>简化接口更有利于数据控制，可以保证互斥量将一个操作完全锁住。</p>
+</blockquote>
+<h4 id="3-3-死锁"><a href="#3-3-死锁" class="headerlink" title="3.3 死锁"></a>3.3 死锁</h4><p>一个操作需要两个或两个以上的互斥量时，可能发生两个线程互相等待，从而什么都没做。 </p>
+<p><strong>解决方案和建议：</strong></p>
+<ul>
+<li>使用<code>std::lock</code> （or std::)锁住两个互斥量防止其相互死锁</li>
+</ul>
+<h3 id="4-同步并发操作"><a href="#4-同步并发操作" class="headerlink" title="4. 同步并发操作"></a>4. 同步并发操作</h3><h2 id="Project"><a href="#Project" class="headerlink" title="Project"></a>Project</h2><p>more project: a collection of projects for learning multithreading/concurrency</p>
+<p><a target="_blank" rel="noopener" href="https://www.reddit.com/r/learnprogramming/comments/9c6yo4/a_collection_of_projects_for_learning/"> A Collection Of Projects For Learning Multithreading/Concurrency</a></p>
+<h3 id="Project-1-multi-sender"><a href="#Project-1-multi-sender" class="headerlink" title="Project 1. multi_sender"></a>Project 1. multi_sender</h3><p><strong>A concurrent ros message  sender</strong></p>
+<p>有一个singleton类叫MsgCollector, 提供request方法，供子线程索取各自的数据。</p>
+<p>step 1.<br>启动指定的子线程，然后从MsgCollector拿取<strong>各自</strong>的数据，然后pub出来。</p>
+<p>step 2.<br>修改附录C的message框架，agent线程通过message向core线程请求数据，随后core线程将轨迹点以message发送给各个agent线程。</p>
+<p>step 3.</p>
+<h3 id="Project-2"><a href="#Project-2" class="headerlink" title="Project 2."></a>Project 2.</h3>
+            
         </section>
         <footer class="blog-post-page-tags">
-        {# 文章标签 #}
-			{% if page.tags and page.tags.length %}
-				{% for tag in page.tags %}
-			<a href="{{ url_for(tag.path) }}" rel="tag" data-toggle="tooltip" data-placement="top" title="Linux">{{ tag.name }}</a>
-				{% endfor %}
-			{% endif %}
-		{# 文章标签 #}
+        
+			
+		
         </footer>
     </article>
     <article class="blog-post-page-readmore">
-    	{# {% include 'includes/pagination.swig' %} #}
-    	{# 上一篇 #}
-		{% if page.prev_link %}
-			<a href="{{ url_for(page.prev_link) }}" class="blog-post-page-readmore-prev" data-toggle="tooltip" data-placement="top" title="{{ page.prev.title }}">上一篇</a>
-			{% elif page.prev && page.prev.path %}
-			<a href="{{ url_for(page.prev.path) }}" class="blog-post-page-readmore-prev" data-toggle="tooltip" data-placement="top" title="{{ page.prev.title }}">上一篇</a>
-		{% endif %}
+    	
+    	
+		
 
-		{# 下一篇 #}
-		{% if page.next_link %}
-			<a href="{{ url_for(page.next_link) }}" class="blog-post-page-readmore-next" data-toggle="tooltip" data-placement="top" title="{{ page.next.title }}">下一篇</a>
-			{% elif page.next && page.next.path %}
-			<a href="{{ url_for(page.next.path) }}" class="blog-post-page-readmore-next" data-toggle="tooltip" data-placement="top" title="{{ page.next.title }}">下一篇</a>
-		{% endif %}
+		
+		
+			<a href="/2020/09/01/hello-hexo/" class="blog-post-page-readmore-next" data-toggle="tooltip" data-placement="top" title="hello,hexo">下一篇</a>
+		
 
         <div style="clear: both;"></div>
     </article>
 
     <article class="blog-post-block blog-post-page-content">
             <div class="row">
-            {% if theme.comment==true %}
+            
                 <div class="col-md-4 col-sm-4 post-page-more-btn">
                     <span class="post-comments-btn btn btn-info btn-block" data-toggle="tooltip" data-placement="top" title="本站采用Disqus评论组件，若您没有科学上网可能会无法查看并评论">加载评论</span>
                 </div>
-            {% endif %}
+            
                 <div class="col-md-4 col-sm-4 post-page-more-btn">
                     <span  data-toggle="modal" data-target="#post-donate-content">
                         <span id="post-donate-btn" class="btn btn-danger btn-block" data-toggle="tooltip" data-placement="top" title="如果您觉得本文还不错或者对您有帮助，可以考虑打赏一下作者哦">打赏本文</span>
@@ -79,7 +235,7 @@
                 </div>
             </div>
         <div class="post-more-function-br"></div>
-{# 打赏模态框 #}
+
         <div class="modal fade" id="post-donate-content" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -93,15 +249,15 @@
                         <div class="row post-donate-content">
                             <div class="col-md-4">
                                 <p>支付宝</p>
-                                <img class="post-donate-content-img no-lightbox" src="{{ theme.alipay }}"/>
+                                <img class="post-donate-content-img no-lightbox" src="http://dl.weic96.cn/logo.png"/>
                             </div>
                             <div class="col-md-4">
                                 <p>微信</p>
-                                <img class="post-donate-content-img no-lightbox" src="{{ theme.wechat }}"/>
+                                <img class="post-donate-content-img no-lightbox" src="http://dl.weic96.cn/logo.png"/>
                             </div>
                             <div class="col-md-4">
                                 <p>财付通</p>
-                                <img class="post-donate-content-img no-lightbox" src="{{ theme.qq }}"/>
+                                <img class="post-donate-content-img no-lightbox" src="http://dl.weic96.cn/logo.png"/>
                             </div>
                         </div>
                     </div>
@@ -111,7 +267,7 @@
                 </div>
             </div>
         </div>
-{# 文章二维码模态框 #}
+
         <div class="modal fade" id="post-qrcode-content" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-sm" role="document">
                 <div class="modal-content">
@@ -133,7 +289,7 @@
                 </div>
             </div>
         </div>
-        {# 文章页二维码生成脚本 #}
+        
         <script>
             // post QRcode
             // 中文转码
@@ -157,58 +313,98 @@
                 return out;
             }
             // 生成
-            var qrcode= $('.post-qrcode-content-canvas').qrcode({width: 150,height: 150,text: toUtf8("{{ page.permalink }}")}).hide();
+            var qrcode= $('.post-qrcode-content-canvas').qrcode({width: 150,height: 150,text: toUtf8("http://yoursite.com/2020/09/01/cpp-%E5%B9%B6%E5%8F%91%E7%AC%94%E8%AE%B0/")}).hide();
             var canvas=qrcode.find('canvas').get(0);
             $('.post-qrcode-content-img').attr('src',canvas.toDataURL('image/jpg'));
         </script>
 
-        {% if theme.disqus.enable==true %}
-        {# disqus评论 #}
-            <div id="disqus_thread"></div>
-            <script data-no-instant>
-                $(document).ready(function() {
-                    $('.post-comments-btn').on('click', function(){
-                        var disqus_shortname = '{{ theme.disqus.name }}';
-                        $.ajax({
-                            type: "GET",
-                            url: "https://" + disqus_shortname + ".disqus.com/embed.js",
-                            dataType: "script",
-                            cache: true
-                        });
-                        $('.post-more-function-br').css('height','.6em');
-                    });
-                });
-                var reset = function (newIdentifier, newUrl, newTitle, newLanguage) {
-                    DISQUS.reset({
-                        reload: true,
-                        config: function () {
-                            this.page.identifier = newIdentifier;
-                            this.page.url = newUrl;
-                            this.page.title = newTitle;
-                            this.language = newLanguage;
-                        }
-                    });
-                };
-            </script>
-            {% endif %}
+        
     </article>
-    {% if theme.valine_enable==true %}
-      <article class="blog-post-block blog-post-page-content" style="margin-top:2.5em;">
-      {#valine评论#}
-      <div class="comment"></div>
-      <script>
-          new Valine({
-              av: AV, // source from av-min.js
-              el: '.comment' ,
-              notify:false, // 邮件提醒 v1.1.4新增
-              verify:false, // 验证码 v1.1.4新增
-              app_id: '{{theme.leancloud.app_id}}',
-              app_key: '{{theme.leancloud.app_key}}',
-              placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
-              path:window.location.pathname // 路径配置 v1.1.5新增，可填window.location.href
-          });
-      </script>
-      </article>
-      {% endif %}
+    
 </div>
-{% endblock %}
+
+                
+            <footer class="blog-footer">
+                <p class="blog-footer-left">Copyright ©  2020 <a href="http://yoursite.com">Hexo</a></p>
+                <p class="blog-footer-right">Powered by <a href="https://hexo.io" target="_blank">Hexo</a>,Theme <a href="https://note.isweic.com/themes-life/" target="_blank">Life</a></p>
+            </footer>
+        </div><!--博客主栏结束-->
+        <!--博客侧边栏开始-->
+        <div class="col-xl-3 blog-sidebar">
+            <div class="blog-sidebar-title">
+                <a href="">Hexo</a>
+            </div>
+            <div class="blog-sidebar-logo">
+                <img src="http://dl.weic96.cn/logo.png">
+            </div>
+            <div class="blog-sidebar-count blog-sidebar-padding">
+                <div class="blog-sidebar-count-left">
+                    <p class="blog-sidebar-count-p">3</p>
+                    <span class="blog-sidebar-count-span">文章</span>
+                </div>
+                <div class="blog-sidebar-count-right">
+                    <p class="blog-sidebar-count-p">0</p>
+                    <span class="blog-sidebar-count-span">标签</span>
+                </div>
+                <div style="clear: both;"></div>
+            </div>
+            <div class="blog-sidebar-icon blog-sidebar-padding">
+                <ul>
+                    <li><a href="" class="icon-github" target="_blank" data-toggle="tooltip" data-placement="top" title="Github"><i class="fa fa-github"></i></a></li>
+                    <li><a href="" class="icon-weibo" target="_blank" data-toggle="tooltip" data-placement="top" title="新浪微博"><i class="fa fa-weibo"></i></a></li>
+                    <li><a href="" class="icon-twitter" target="_blank" data-toggle="tooltip" data-placement="top" title="Twitter"><i class="fa fa-twitter"></i></a></li>
+                    <!--<li><a href="" class="icon-facebook" target="_blank" data-toggle="tooltip" data-placement="top" title="FaceBook"><i class="fa fa-facebook"></i></a></li>-->
+                    <li><a href="mailto:" class="icon-email" data-toggle="tooltip" data-placement="top" title="E-Mail"><i class="fa fa-envelope"></i></a></li>
+                    <li><a href="" class="icon-rss" data-toggle="tooltip" target="_blank" data-placement="top" title="RSS"><i class="fa fa-rss"></i></a></li>
+                </ul>
+            </div>
+            <div class="blog-sidebar-categories">
+                <h4 class="blog-sidebar-h4"><i class="fa fa-folder-open"></i>&nbsp;文章分类</h4>
+                <ul class="list-group blog-sidebar-padding">
+                  
+                </ul>
+            </div>
+            <div class="blog-sidebar-tags">
+                <h4 class="blog-sidebar-h4"><i class="fa fa-tag"></i>&nbsp;标签云</h4>
+                <ul class="blog-sidebar-tags-ul blog-sidebar-padding">
+                  
+                </ul>
+            </div>
+            <script>
+              // 博客侧栏标签云随机色
+              var tag_cloud = $('.tag-could');
+              tag_cloud.each(function () {
+                  var Cnum = 9;
+                  var Crand = parseInt(Math.random() * Cnum);
+                  $(this).addClass("tag-could" + Crand);
+              })
+            </script>
+            <!--返回顶部按钮-->
+            <div class="retop">
+                <i class="fa fa-angle-up"></i>
+            </div>
+        </div><!--博客侧边栏结束-->
+    </div>
+</div>
+<script src="/js/LeanStatistics.min.js"></script>
+<script src="/js/Life.js"></script>
+<script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+    otherF();
+    LeanStatistics();
+    $(document).pjax('a', '#pjax-box', {fragment:'#pjax-box', timeout:8000}).on('pjax:complete', function() {
+      $('pre code').each(function(i, block){
+        hljs.highlightBlock(block);
+      })
+      $('code.hljs').each(function(i, block) {
+        hljs.lineNumbersBlock(block);
+      });
+      LeanStatistics();
+    }).on('pjax:start', function() { NProgress.start(); }).on('pjax:end',   function() {
+      NProgress.done();
+      otherF();
+    });
+</script>
+</body>
+</html>
